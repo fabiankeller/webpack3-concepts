@@ -1,28 +1,337 @@
 <!doctype html>
 <html>
 <head>
-  <meta charset="UTF-8" >
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" >
-  <meta http-equiv="x-ua-compatible" content="IE=edge" >
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta http-equiv="x-ua-compatible" content="IE=edge">
 
-  <title>TODO: Change Title</title>
-
-
-  <!-- Printing and PDF exports -->
-  <!-- <script>
-     var link = document.createElement( 'link' );
-     link.rel = 'stylesheet';
-     link.type = 'text/css';
-     link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
-     document.getElementsByTagName( 'head' )[0].appendChild( link );
-   </script>-->
+    <title>Expert Day - Webpack 3</title>
 </head>
 <body>
 <div class="reveal">
-  <div class="slides">
-    <section>TODO: Add Title Slide</section>
-    <section>TODO: Add Content Slides</section>
-  </div>
+    <div class="slides">
+        <section>
+            <h1>
+                Webpack 3
+            </h1>
+        </section>
+        <section>
+            <div>
+                <h2>Topics</h2>
+                <ul>
+                    <li class="fragment" data-fragment-index="1">What is webpack?</li>
+                    <li class="fragment" data-fragment-index="2">Webpack core concepts</li>
+                    <li class="fragment" data-fragment-index="3">More important concepts</li>
+                    <li class="fragment" data-fragment-index="5">Development tools</li>
+                    <li class="fragment" data-fragment-index="6">Webpack 3</li>
+                    <li class="fragment" data-fragment-index="7">What's next?</li>
+                </ul>
+            </div>
+        </section>
+        <!-- What is webpack? -->
+        <section>
+            <section>
+                <h2>What is webpack?</h2>
+                <img src="picture/what-is-webpack.png">
+            </section>
+        </section>
+        <!-- webpack core concepts -->
+        <section>
+            <section>
+                <h2>Webpack core concepts</h2>
+                <ul>
+                    <li class="fragment" data-fragment-index="1">Entry</li>
+                    <li class="fragment" data-fragment-index="2">Output</li>
+                    <li class="fragment" data-fragment-index="3">Loaders</li>
+                    <li class="fragment" data-fragment-index="4">Plugins</li>
+                </ul>
+            </section>
+            <section>
+                <h3>Entry</h3>
+                <p>Webpack creates a graph of your app's dependencies.
+                    The <span style="color:deepskyblue">starting point</span> is know as entry point.</p>
+                <div>
+                    <pre><code class="javascript" data-trim contenteditable>
+// webpack.config.js
+
+module.exports = {
+  entry: './path/to/my/entry/file.js'
+};
+                    </code></pre>
+                </div>
+            </section>
+            <section>
+                <h3>Output</h3>
+                <p>You need to tell Webpack where to bundle your app.
+                    The output property tells <span style="color:deepskyblue">how to treat bundled code.</span></p>
+                <div>
+                    <pre><code class="javascript" data-trim contenteditable>
+// webpack.config.js
+
+const path = require('path');
+
+module.exports = {
+  entry: './path/to/my/entry/file.js',
+  output: {
+    path: path.resolve(__dirname, 'dist'),
+    filename: 'my-first-webpack.bundle.js'
+  }
+};
+                    </code></pre>
+                </div>
+            </section>
+            <section>
+                <h3>Loaders</h3>
+                <p>Webpack can only process Javascript natively.
+                    Loaders are used to <span style="color:deepskyblue">transform other resources</span> into
+                    JavaScript.</p>
+                <div>
+                    <pre><code class="javascript" data-trim contenteditable>
+// webpack.config.js
+const config = {
+ ...,
+  module: {
+    rules: [
+      { test: /\.txt$/, use: 'raw-loader' }
+    ]
+  }
+};
+module.exports = config;
+                    </code></pre>
+                </div>
+                <p>"When you come across a '.txt' file inside a dependency,
+                    use the raw-loader to transform it before you add it to the bundle"</p>
+            </section>
+            <section>
+                <h3>Plugins</h3>
+                <p>Are most commonly used to <span
+                        style="color:deepskyblue">perform actions and custom functionality</span> on "compilations" or
+                    "chunks".</p>
+                <div>
+                    <pre><code class="javascript" data-trim contenteditable>
+// webpack.config.js
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const webpack = require('webpack');
+
+const config = {
+  ...,
+  plugins: [
+    new webpack.optimize.UglifyJsPlugin(),
+    new HtmlWebpackPlugin({template: './src/index.html'})
+  ]
+};
+
+module.exports = config;
+                    </code></pre>
+                </div>
+                <div>
+                    <a href="https://webpack.js.org/plugins/" target="_blank">https://webpack.js.org/plugins/</a>
+                </div>
+            </section>
+        </section>
+        <!-- more important concepts -->
+        <section>
+            <section>
+                <h2>More important concepts</h2>
+                <ul>
+                    <li class="fragment" data-fragment-index="1">Code Splitting</li>
+                    <li class="fragment" data-fragment-index="2">Tree Shaking</li>
+                    <li class="fragment" data-fragment-index="3">Hot Module Replacement</li>
+                    <li class="fragment" data-fragment-index="4">etc.</li>
+                </ul>
+            </section>
+            <section>
+                <h3>Code splitting</h3>
+                <p>This feature allows you to split your code into various bundles (chunks) which can be loaded on
+                    demand. There are three approaches available for code splitting:</p>
+                <ul>
+                    <li class="fragment" data-fragment-index="1"><strong>Entry Points:</strong> Manually split code
+                        using entry config
+                    </li>
+                    <li class="fragment" data-fragment-index="2"><strong>Prevent Duplication:</strong> Use the
+                        CommonsChunkPlugin to dedupe and split chunks
+                    </li>
+                    <li class="fragment" data-fragment-index="3"><strong>Dynamic imports:</strong> Split code via inline
+                        function calls within modules
+                    </li>
+                </ul>
+            </section>
+            <section>
+                <h3>Tree shaking</h3>
+                <div>
+                    <p>Without tree shaking the square method will remain in the bundle.</p>
+                    <pre><code class="javascript" data-trim contenteditable>
+// math.js
+export square = x => x * x;
+export cube = x => x * x * x;
+                    </code></pre>
+                    <pre><code class="javascript" data-trim contenteditable>
+import { cube } from './math.js';
+                    </code></pre>
+                </div>
+                <p></p>
+
+            </section>
+            <section>
+                <h3>Tree shaking</h3>
+                <div>
+                    <p>For tree shaking we need to add a minifier that supports dead code removal - e.g. <span
+                            style="color:deepskyblue">UglifyJSPlugin</span> - to our config.</p>
+                    <pre><code class="javascript" data-trim contenteditable>
+const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
+
+module.exports = {
+  ...,
+  plugins: [
+    new UglifyJSPlugin()
+  ]
+};
+                    </code></pre>
+                    <p>After tree shaking, the square method will no longer be part of the bundle.</p>
+                </div>
+            </section>
+            <section>
+                <h3>Hot Module Replacement</h3>
+                <p>Update modules ("chunks") at runtime without the need of a full refresh.</p>
+                <div>
+                    <pre><code class="javascript" data-trim contenteditable>
+const webpack = require('webpack');
+
+module.exports = {
+  ...,
+  devServer: {
+     ...,
+     hot: true
+  },
+  plugins: [
+    new webpack.HotModuleReplacementPlugin()
+  ]
+};
+                    </code></pre>
+                </div>
+            </section>
+        </section>
+        <!-- development tools -->
+        <section>
+            <section>
+                <h2>Development tools</h2>
+                <p>webpack offers really powerful development tools</p>
+            </section>
+            <section>
+                <h3>Source maps</h3>
+                <p>After bundling, it becomes difficult to track down errors and warnings to the original location.</p>
+                <p>JavaScript offers source maps, which maps your compiled code back to your original source code.</p>
+                <div>
+                    <pre><code class="javascript" data-trim contenteditable>
+// webpack.config.js
+
+module.exports = {
+  ...,
+  devtool: 'inline-source-map',
+  ...;
+                    </code></pre>
+                </div>
+            </section>
+            <section>
+                <h3>Watch mode</h3>
+                <p>Watch all files within your dependency graph for changes.</p>
+                <div>
+                    <pre><code class="javascript" data-trim contenteditable>
+webpack --watch
+                    </code></pre>
+                </div>
+            </section>
+            <section>
+                <h3>Webpack DEV Server</h3>
+                <p>Provides you with a simple web server and the ability to use live reloading.</p>
+                <div>
+                    <pre><code class="javascript" data-trim contenteditable>
+webpack-dev-server --open
+                    </code></pre>
+                </div>
+            </section>
+        </section>
+        <!-- webpack 3 -->
+        <section>
+            <section>
+                <h2>Webpack 3</h2>
+            </section>
+            <section>
+                <h3>Scope hoisting</h3>
+                <p><span style="color:orangered">Problem:</span></p>
+                <div>
+                    <p>When bundling, each module was wrapped in individual function closures (made JS
+                        slower).</p>
+                </div>
+            </section>
+            <section>
+                <h3>Scope hoisting</h3>
+                <p><span style="color:deepskyblue">Solution:</span></p>
+                <div>
+                    <p>Scope Hoisting will remove the function wrapper around your modules.</p>
+                    <pre><code class="javascript" data-trim contenteditable>
+// Plugin to enable Scope hoisting (webpack.config.js)
+
+module.exports = {
+  plugins: [
+    new webpack.optimize.ModuleConcatenationPlugin()
+  ]
+};
+                    </code></pre>
+                </div>
+            </section>
+            <section>
+                <h3>Magic comments</h3>
+                <p><span style="color:orangered">Problem:</span></p>
+                <div>
+                    <p>In Webpack 2 the dynamic imports were introduced.</p>
+                    <pre><code class="javascript" data-trim contenteditable>
+import('a');
+                    </code></pre>
+                    <p>This way the users couldn't create named "chunks" as they can with require.ensure</p>
+                </div>
+                <div>
+                    <pre><code class="javascript" data-trim contenteditable>
+var a = require("a");
+var b = require("b");
+require.ensure(["c"], function(require) {
+    require("b").xyz();
+    var d = require("d");
+});
+                    </code></pre>
+                </div>
+            </section>
+            <section>
+                <h3>Magic comments</h3>
+                <p><span style="color:deepskyblue">Solution:</span></p>
+                <div>
+                    <p></p>
+                    <pre><code class="javascript" data-trim contenteditable>
+import(/* webpackChunkName: "my-chunk-name" */ 'module');
+                    </code></pre>
+                </div>
+            </section>
+        </section>
+        <!-- What's next? -->
+        <section>
+            <section>
+                <h2>What's next?</h2>
+                <ul>
+                    <li>Better Build Caching</li>
+                    <li>Faster initial and incremental builds</li>
+                    <li>Better TypeScript Experience</li>
+                    <li>Revamped Long Term Caching</li>
+                    <li>WASM Module Support</li>
+                    <li>Improve User Experience</li>
+                </ul>
+            </section>
+        </section>
+        <section>
+            <h2>More information needed?</h2>
+            <p><a href="https://webpack.js.org/guides/" target="_blank">Webpack Guide</a></p>
+            <p><a href="https://github.com/webpack/webpack" target="_blank">Webpack GitHub</a></p>
+        </section>
+    </div>
 </div>
 
 <script src="presentation.bundle.js"></script>
